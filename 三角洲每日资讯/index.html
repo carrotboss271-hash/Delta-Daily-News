@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三角洲每日资讯</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main>
+        <!-- 页面标题：今日密码 -->
+        <h1>今日密码</h1>
+        <!-- 六个地图单选框：共用一个 name，各自设置 id，默认选中零号大坝 -->
+        <input type="radio" name="map" id="zero-dam" checked>
+        <input type="radio" name="map" id="longbow-creek">
+        <input type="radio" name="map" id="buckshot">
+        <input type="radio" name="map" id="space-station">
+        <input type="radio" name="map" id="tide-prison">
+        <input type="radio" name="map" id="az3">
+        <!-- 密码栏：零号大坝、长弓溪谷、巴克什、航天基地、潮汐监狱、AZ3 -->
+        <!-- 每个入口放地图名和四位密码，用 label 关联对应的单选框 -->
+        <div class="map-entries">
+            <label for="zero-dam">
+                <span>零号大坝</span>
+                <span>1234</span>
+            </label>
+            <label for="longbow-creek">
+                <span>长弓溪谷</span>
+                <span>5678</span>
+            </label>
+            <label for="buckshot">
+                <span>巴克什</span>
+                <span>9012</span>
+            </label>
+            <label for="space-station">
+                <span>航天基地</span>
+                <span>3456</span>
+            </label>
+            <label for="tide-prison">
+                <span>潮汐监狱</span>
+                <span>7890</span>
+            </label>
+            <label for="az3">
+                <span>AZ3</span>
+                <span>2345</span>
+            </label>
+        </div>
+        <!-- 地图详情：给每张地图准备一块内容，依次放名称、点位说明、图片和大号密码 -->
+        <!-- 详情容器与单选框、密码栏放在同一层，方便 CSS 根据选中状态切换 -->
+        <div class="map-entries">
+            <!-- 零号大坝 -->
+            <div class="map-entry" id="zero-dam-entry">
+                <h1>零号大坝</h1>
+                <p>大变电站右侧，进入管道后匍匐到通道的尽头</p>
+                <img src="images/zero-dam.jpg" alt="零号大坝">
+                <div class="password">
+                    <h2>地图密码</h2>
+                    <p>1234</p>
+                </div>
+            </div>
+            <!-- 长弓溪谷 -->
+            <div class="map-entry" id="longbow-creek-entry">
+                <h1>长弓溪谷</h1>
+                <p>地图右下角标点附近地下入口</p>
+                <img src="images/longbow-creek.jpg" alt="长弓溪谷">
+                <div class="password">
+                    <h2>地图密码</h2>
+                    <p>5678</p>
+                </div>
+            </div>
+            <!-- 巴克什 -->
+            <div class="map-entry" id="buckshot-entry">
+                <h1>巴克什</h1>
+                <p>大浴场北侧</p>
+                <img src="images/buckshot.jpg" alt="巴克什">
+                <div class="password">
+                    <h2>地图密码</h2>
+                    <p>9012</p>
+                </div>
+            </div>
+            <!-- 航天基地 -->
+            <div class="map-entry" id="space-station-entry">
+                <h1>航天基地</h1>
+                <p>工业组装楼二楼</p>
+                <img src="images/space-station.jpg" alt="航天基地">
+                <div class="password">
+                    <h2>地图密码</h2>
+                    <p>3456</p>
+                </div>
+
+            <!-- 潮汐监狱 -->
+            <div class="map-entry" id="tide-prison-entry">
+                <h1>潮汐监狱</h1>
+                <p>监狱行政区1楼大厅楼梯拐角处</p>
+                <img src="images/tide-prison.jpg" alt="潮汐监狱">
+                <div class="password">
+                    <h2>地图密码</h2>
+                    <p>7890</p>
+                </div>
+            <!-- AZ3 -->
+            <div class="map-entry" id="az3-entry">
+                <h1>AZ3</h1>
+                <p>海水处理区左下方标点附近一层</p>
+                <img src="images/az3.jpg" alt="AZ3">
+                <div class="password">
+                    <h2>地图密码</h2>
+                    <p>2345</p>
+                </div>
+        </div>
+    </main>
+</body>
+</html>
