@@ -1,38 +1,220 @@
-    /* 页面背景、字体和整体宽度 */
+/* 页面背景、字体和整体宽度 */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #e9ecef;
+    color: #333;
+    font-family: Arial, "Microsoft YaHei", sans-serif;
+}
+
+/* 今日密码标题 */
+h1 {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: clamp(1.7rem, 5vw, 2.2rem);
+}
+
+/* 把单选框藏起来，但保留键盘选择能力 */
+input[type="radio"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+}
+
+/* 六个地图密码入口 */
+.map-tabs {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+}
+
+.map-tabs label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 68px;
+    padding: 10px 18px;
+    border-radius: 6px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.map-tabs label span:first-child {
+    font-size: 1rem;
+}
+
+.map-tabs label span:last-child {
+    margin-top: 3px;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* 当前选中的地图入口 */
+#zero-dam:checked ~ .map-tabs label[for="zero-dam"],
+#longbow-creek:checked ~ .map-tabs label[for="longbow-creek"],
+#buckshot:checked ~ .map-tabs label[for="buckshot"],
+#space-station:checked ~ .map-tabs label[for="space-station"],
+#tide-prison:checked ~ .map-tabs label[for="tide-prison"],
+#az3:checked ~ .map-tabs label[for="az3"] {
+    background-color: #28a745;
+    color: #fff;
+}
+
+/* 键盘切换时也能看出焦点落在哪个地图入口 */
+#zero-dam:focus-visible ~ .map-tabs label[for="zero-dam"],
+#longbow-creek:focus-visible ~ .map-tabs label[for="longbow-creek"],
+#buckshot:focus-visible ~ .map-tabs label[for="buckshot"],
+#space-station:focus-visible ~ .map-tabs label[for="space-station"],
+#tide-prison:focus-visible ~ .map-tabs label[for="tide-prison"],
+#az3:focus-visible ~ .map-tabs label[for="az3"] {
+    outline: 3px solid #176b36;
+    outline-offset: 2px;
+}
+
+/* 地图详情默认收起 */
+.map-details .map-entry {
+    display: none;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    text-align: center;
+}
+
+.map-entry > h1 {
+    margin: 0 0 10px;
+    font-size: 1.7rem;
+}
+
+.map-entry > p {
+    margin: 0 auto 18px;
+    line-height: 1.6;
+}
+
+/* 只展开与当前单选框对应的地图详情 */
+#zero-dam:checked ~ .map-details #zero-dam-entry,
+#longbow-creek:checked ~ .map-details #longbow-creek-entry,
+#buckshot:checked ~ .map-details #buckshot-entry,
+#space-station:checked ~ .map-details #space-station-entry,
+#tide-prison:checked ~ .map-details #tide-prison-entry,
+#az3:checked ~ .map-details #az3-entry {
+    display: block;
+}
+
+/* 地图图片随屏幕缩放并保持比例 */
+.map-entry img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin: 20px auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* 图片下方的大号地图密码 */
+.password {
+    max-width: 420px;
+    margin: 20px auto 0;
+    background-color: #fff;
+}
+
+.password h2 {
+    margin: 0;
+    padding: 8px;
+    background-color: #888;
+    color: #fff;
+}
+
+.password p {
+    margin: 0;
+    padding: 10px;
+    font-size: 2em;
+    font-weight: bold;
+}
+
+/* 中等屏幕下把入口排成两行 */
+@media (max-width: 900px) {
+    .map-tabs {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* 手机屏幕：入口两列排列，详情紧凑一些 */
+@media (max-width: 600px) {
     body {
-        margin: 0;
-        padding: 20px;
-        background-color: #e9ecef;
-        font-family: Arial, "Microsoft YaHei", sans-serif;
-        color: #333;
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
+        padding: 12px 10px 24px;
     }
 
+    h1 {
+        margin-top: 8px;
+        margin-bottom: 16px;
+        font-size: 1.8rem;
+    }
 
-    /* 今日密码标题和下方分隔线 */
+    .map-tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 14px;
+    }
 
+    .map-tabs label {
+        min-height: 62px;
+        padding: 8px 6px;
+        border-radius: 8px;
+    }
 
-    /* 隐藏单选框，记得保留键盘操作和焦点提示 */
+    .map-tabs label span:first-child {
+        font-size: 0.95rem;
+    }
 
+    .map-tabs label span:last-child {
+        font-size: 1.2rem;
+    }
 
-    /* 六个密码入口：桌面排成一行，地图名在密码上方 */
+    .map-details .map-entry {
+        padding: 16px 12px;
+        border-radius: 10px;
+    }
 
+    .map-entry > h1 {
+        margin-bottom: 8px;
+        font-size: 1.45rem;
+    }
 
-    /* 当前选中的入口：用 :checked 和兄弟选择器加绿色高亮 */
+    .map-entry > p {
+        margin-bottom: 12px;
+        font-size: 0.98rem;
+        text-align: left;
+    }
 
+    .map-entry img {
+        margin: 12px auto;
+        border-radius: 7px;
+    }
 
-    /* 地图详情：默认隐藏，再根据选中的单选框显示对应内容 */
+    .password {
+        margin-top: 12px;
+    }
 
+    .password h2 {
+        font-size: 1.1rem;
+    }
 
-    /* 地图名称、点位说明和分隔线 */
-
-
-    /* 地图图片：居中，随屏幕缩放并保持比例 */
-
-
-    /* 图片下方的大号地图密码，注意保留开头的 0 */
-
-
-    /* 窄屏适配：密码入口换行，调整间距和字号 */
+    .password p {
+        padding: 8px;
+        font-size: 1.8rem;
+    }
+}

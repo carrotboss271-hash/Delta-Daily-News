@@ -19,7 +19,7 @@
         <input type="radio" name="map" id="az3">
         <!-- 密码栏：零号大坝、长弓溪谷、巴克什、航天基地、潮汐监狱、AZ3 -->
         <!-- 每个入口放地图名和四位密码，用 label 关联对应的单选框 -->
-        <div class="map-entries">
+        <div class="map-tabs">
             <label for="zero-dam">
                 <span>零号大坝</span>
                 <span>1234</span>
@@ -47,7 +47,7 @@
         </div>
         <!-- 地图详情：给每张地图准备一块内容，依次放名称、点位说明、图片和大号密码 -->
         <!-- 详情容器与单选框、密码栏放在同一层，方便 CSS 根据选中状态切换 -->
-        <div class="map-entries">
+        <div class="map-details">
             <!-- 零号大坝 -->
             <div class="map-entry" id="zero-dam-entry">
                 <h1>零号大坝</h1>
@@ -87,7 +87,7 @@
                     <h2>地图密码</h2>
                     <p>3456</p>
                 </div>
-
+            </div>
             <!-- 潮汐监狱 -->
             <div class="map-entry" id="tide-prison-entry">
                 <h1>潮汐监狱</h1>
@@ -97,6 +97,7 @@
                     <h2>地图密码</h2>
                     <p>7890</p>
                 </div>
+            </div>
             <!-- AZ3 -->
             <div class="map-entry" id="az3-entry">
                 <h1>AZ3</h1>
@@ -106,6 +107,7 @@
                     <h2>地图密码</h2>
                     <p>2345</p>
                 </div>
+            </div>
         </div>
     </main>
 </body>
