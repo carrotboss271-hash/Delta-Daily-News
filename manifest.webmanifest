@@ -1,0 +1,19 @@
+{
+  "id": "/Delta-Daily-News/",
+  "name": "三角洲每日资讯",
+  "short_name": "三角洲资讯",
+  "description": "查看三角洲行动每日地图密码和点位资讯。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#e9ecef",
+  "theme_color": "#e9ecef",
+  "icons": [
+    {
+      "src": "./icons/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
