@@ -1,0 +1,41 @@
+name: 每日更新地图密码
+
+on:
+  # API 说明的更新时间是北京时间凌晨 4 点；这里安排在 4:05 执行。
+  schedule:
+    - cron: "5 20 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-codes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 拉取项目文件
+        uses: actions/checkout@v7
+
+      - name: 准备 Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: 获取今日密码并更新 JSON
+        env:
+          DELTA_API_KEY: ${{ secrets.DELTA_API_KEY }}
+        run: python scripts/update_codes.py
+
+      - name: 提交更新后的密码
+        run: |
+          if git diff --quiet -- codes.json; then
+            echo "密码没有变化，不需要提交。"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add codes.json
+          git commit -m "更新三角洲每日地图密码"
+          git push
