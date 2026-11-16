@@ -1,0 +1,8 @@
+{
+  "appId": "com.carrotboss.deltadailynews",
+  "appName": "三角洲资讯",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}

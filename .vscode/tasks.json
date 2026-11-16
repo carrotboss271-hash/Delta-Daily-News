@@ -1,0 +1,84 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // 第一次准备移动端工程时，先在 mobile 目录安装 Capacitor 依赖。
+    {
+      "label": "三角洲移动端：安装依赖",
+      "type": "process",
+      "command": "${workspaceFolder}/mobile/.tools/node/bin/npm",
+      "args": ["install"],
+      "options": {
+        "cwd": "${workspaceFolder}/mobile",
+        "env": {
+          "PATH": "${workspaceFolder}/mobile/.tools/node/bin:${env:PATH}"
+        }
+      },
+      "problemMatcher": []
+    },
+
+    // 首次运行会生成 Android 原生工程，并把网页资源一起准备好。
+    {
+      "label": "三角洲移动端：生成 Android 工程",
+      "type": "process",
+      "command": "${workspaceFolder}/mobile/.tools/node/bin/npm",
+      "args": ["run", "android:add"],
+      "options": {
+        "cwd": "${workspaceFolder}/mobile",
+        "env": {
+          "PATH": "${workspaceFolder}/mobile/.tools/node/bin:${env:PATH}"
+        }
+      },
+      "problemMatcher": []
+    },
+
+    // 修改网页后运行这个任务，让最新的 HTML、样式、脚本和图片进入 Android 工程。
+    {
+      "label": "三角洲移动端：同步网页资源",
+      "type": "process",
+      "command": "${workspaceFolder}/mobile/.tools/node/bin/npm",
+      "args": ["run", "android:sync"],
+      "options": {
+        "cwd": "${workspaceFolder}/mobile",
+        "env": {
+          "PATH": "${workspaceFolder}/mobile/.tools/node/bin:${env:PATH}"
+        }
+      },
+      "problemMatcher": []
+    },
+
+    // 工程生成并同步完成后，用 Gradle 在 VS Code 终端里构建可安装的调试 APK。
+    {
+      "label": "三角洲移动端：生成 Android 图标和名称",
+      "type": "process",
+      "command": "${workspaceFolder}/mobile/.tools/node/bin/npm",
+      "args": ["run", "android:icons"],
+      "options": {
+        "cwd": "${workspaceFolder}/mobile",
+        "env": {
+          "PATH": "${workspaceFolder}/mobile/.tools/node/bin:${env:PATH}"
+        }
+      },
+      "problemMatcher": []
+    },
+
+    // 图标先生成，再启动 Gradle，保证打出来的 APK 使用项目图标。
+    {
+      "label": "三角洲移动端：构建调试 APK",
+      "type": "process",
+      "command": "./gradlew",
+      "args": ["assembleDebug"],
+      "options": {
+        "cwd": "${workspaceFolder}/mobile/android",
+        "env": {
+          "JAVA_HOME": "${workspaceFolder}/mobile/.tools/temurin-21/Contents/Home",
+          "ANDROID_HOME": "${workspaceFolder}/mobile/.tools/android-sdk",
+          "ANDROID_SDK_ROOT": "${workspaceFolder}/mobile/.tools/android-sdk",
+          "PATH": "${workspaceFolder}/mobile/.tools/temurin-21/Contents/Home/bin:${workspaceFolder}/mobile/.tools/android-sdk/platform-tools:${env:PATH}"
+        }
+      },
+      "problemMatcher": [],
+      "dependsOn": "三角洲移动端：生成 Android 图标和名称",
+      "dependsOrder": "sequence"
+    }
+  ]
+}

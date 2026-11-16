@@ -1,0 +1,20 @@
+# 本地下载的 Node、Android SDK 和构建缓存，不会提交到 GitHub。
+.tools/
+
+# npm 安装的依赖库，不需要提交到仓库。
+node_modules/
+
+# 由 prepare:web 生成的网页副本，下次同步时会重新生成。
+www/
+
+# Capacitor 生成的原生工程文件夹。
+android/
+ios/
+
+# 供手机安装的本地 APK，不随网页源码推送到 GitHub。
+release/
+
+# 本机签名和 SDK 路径设置，避免把私钥或个人电脑路径传上 GitHub。
+*.keystore
+*.jks
+local.properties

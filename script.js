@@ -1,5 +1,6 @@
 // 先从项目里的 JSON 文件读取密码，方便后面换成自动更新的数据。
-const DATA_URL = "./codes.json";
+// 普通网页读同目录的数据；移动端打包时可以单独指定在线密码地址。
+const DATA_URL = window.DAILY_CODES_URL || "./codes.json";
 
 
 // 把同一张地图的密码同步到顶部入口和下方详情卡片。
@@ -53,7 +54,7 @@ function showDailyCodes(data) {
 }
 
 
-// 页面打开后读取 codes.json；读取失败时保留 HTML 里原来的密码。
+// 页面打开后优先读取最新数据；移动端断网时退回安装包里附带的 codes.json。
 async function loadDailyCodes() {
     try {
         const response = await fetch(DATA_URL, { cache: "no-store" });
@@ -65,7 +66,24 @@ async function loadDailyCodes() {
         const data = await response.json();
         showDailyCodes(data);
     } catch (error) {
-        console.error("每日密码没有加载成功：", error);
+        console.error("在线每日密码没有加载成功：", error);
+
+        if (DATA_URL === "./codes.json") {
+            return;
+        }
+
+        try {
+            const fallbackResponse = await fetch("./codes.json", { cache: "no-store" });
+
+            if (!fallbackResponse.ok) {
+                throw new Error(`读取本地备用密码失败：HTTP ${fallbackResponse.status}`);
+            }
+
+            const fallbackData = await fallbackResponse.json();
+            showDailyCodes(fallbackData);
+        } catch (fallbackError) {
+            console.error("本地备用密码也没有加载成功：", fallbackError);
+        }
     }
 }
 

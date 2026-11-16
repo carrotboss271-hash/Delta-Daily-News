@@ -1,0 +1,23 @@
+{
+  "name": "delta-daily-news-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "三角洲每日资讯的 Android 与 iOS 应用外壳",
+  "scripts": {
+    "prepare:web": "node scripts/prepare-web.mjs",
+    "android:add": "npm run prepare:web && cap add android",
+    "ios:add": "npm run prepare:web && cap add ios",
+    "android:sync": "npm run prepare:web && cap sync android",
+    "android:icons": "mkdir -p /tmp/delta-daily-news-swift-cache && CLANG_MODULE_CACHE_PATH=/tmp/delta-daily-news-swift-cache SWIFT_MODULECACHE_PATH=/tmp/delta-daily-news-swift-cache swift scripts/generate-android-icons.swift",
+    "ios:sync": "npm run prepare:web && cap sync ios",
+    "android:open": "cap open android",
+    "ios:open": "cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/ios": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0"
+  }
+}
