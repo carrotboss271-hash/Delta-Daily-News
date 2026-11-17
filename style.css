@@ -4,12 +4,17 @@
 }
 
 body {
-    max-width: 1200px;
-    margin: 0 auto;
+    margin: 0;
     padding: 20px;
     background-color: #e9ecef;
     color: #333;
     font-family: Arial, "Microsoft YaHei", sans-serif;
+}
+
+/* 桌面端内容约占视口的五分之三，小屏保留可用宽度 */
+main {
+    width: min(100%, clamp(600px, 60vw, 1200px));
+    margin-inline: auto;
 }
 
 /* 今日密码标题 */
@@ -146,7 +151,7 @@ input[type="radio"] {
 }
 
 /* 中等屏幕下把入口排成两行 */
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
     .map-tabs {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
