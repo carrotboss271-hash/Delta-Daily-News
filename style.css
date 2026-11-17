@@ -11,17 +11,18 @@ body {
     font-family: Arial, "Microsoft YaHei", sans-serif;
 }
 
-/* 桌面端内容约占视口的五分之三，小屏保留可用宽度 */
+/* 使用居中的手机宽度，窄屏随可用空间收缩 */
 main {
-    width: min(100%, clamp(600px, 60vw, 1200px));
+    max-width: 420px;
     margin-inline: auto;
 }
 
 /* 今日密码标题 */
 h1 {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     text-align: center;
-    font-size: clamp(1.7rem, 5vw, 2.2rem);
+    font-size: 1.8rem;
+    margin-top: 8px;
 }
 
 /* 把单选框藏起来，但保留键盘选择能力 */
@@ -38,9 +39,9 @@ input[type="radio"] {
 /* 六个地图密码入口 */
 .map-tabs {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 10px;
-    margin-bottom: 24px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 14px;
 }
 
 .map-tabs label {
@@ -49,21 +50,21 @@ input[type="radio"] {
     align-items: center;
     justify-content: center;
     min-width: 0;
-    min-height: 68px;
-    padding: 10px 18px;
-    border-radius: 6px;
+    min-height: 62px;
+    padding: 8px 6px;
+    border-radius: 8px;
     background-color: #f8f9fa;
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
 }
 
 .map-tabs label span:first-child {
-    font-size: 1rem;
+    font-size: 0.95rem;
 }
 
 .map-tabs label span:last-child {
     margin-top: 3px;
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 700;
 }
 
@@ -92,7 +93,7 @@ input[type="radio"] {
 /* 地图详情默认收起 */
 .map-details .map-entry {
     display: none;
-    padding: 20px;
+    padding: 16px 12px;
     border-radius: 10px;
     background-color: #f8f9fa;
     text-align: center;
@@ -100,12 +101,16 @@ input[type="radio"] {
 
 .map-entry > h1 {
     margin: 0 0 10px;
-    font-size: 1.7rem;
+    font-size: 1.45rem;
+    margin-bottom: 8px;
 }
 
 .map-entry > p {
     margin: 0 auto 18px;
     line-height: 1.6;
+    margin-bottom: 12px;
+    font-size: 0.98rem;
+    text-align: left;
 }
 
 /* 只展开与当前单选框对应的地图详情 */
@@ -124,9 +129,9 @@ input[type="radio"] {
     width: 100%;
     max-width: 100%;
     height: auto;
-    margin: 20px auto;
+    margin: 12px auto;
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 7px;
 }
 
 /* 图片下方的大号地图密码 */
@@ -134,6 +139,7 @@ input[type="radio"] {
     max-width: 420px;
     margin: 20px auto 0;
     background-color: #fff;
+    margin-top: 12px;
 }
 
 .password h2 {
@@ -141,85 +147,19 @@ input[type="radio"] {
     padding: 8px;
     background-color: #888;
     color: #fff;
+    font-size: 1.1rem;
 }
 
 .password p {
     margin: 0;
-    padding: 10px;
-    font-size: 2em;
+    padding: 8px;
+    font-size: 1.8rem;
     font-weight: bold;
 }
 
-/* 中等屏幕下把入口排成两行 */
-@media (max-width: 1100px) {
-    .map-tabs {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-}
-
-/* 手机屏幕：入口两列排列，详情紧凑一些 */
+/* 手机屏幕保留较小的页面边距 */
 @media (max-width: 600px) {
     body {
         padding: 12px 10px 24px;
-    }
-
-    h1 {
-        margin-top: 8px;
-        margin-bottom: 16px;
-        font-size: 1.8rem;
-    }
-
-    .map-tabs {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-        margin-bottom: 14px;
-    }
-
-    .map-tabs label {
-        min-height: 62px;
-        padding: 8px 6px;
-        border-radius: 8px;
-    }
-
-    .map-tabs label span:first-child {
-        font-size: 0.95rem;
-    }
-
-    .map-tabs label span:last-child {
-        font-size: 1.2rem;
-    }
-
-    .map-details .map-entry {
-        padding: 16px 12px;
-        border-radius: 10px;
-    }
-
-    .map-entry > h1 {
-        margin-bottom: 8px;
-        font-size: 1.45rem;
-    }
-
-    .map-entry > p {
-        margin-bottom: 12px;
-        font-size: 0.98rem;
-        text-align: left;
-    }
-
-    .map-entry img {
-        margin: 12px auto;
-        border-radius: 7px;
-    }
-
-    .password {
-        margin-top: 12px;
-    }
-
-    .password h2 {
-        font-size: 1.1rem;
-    }
-
-    .password p {
-        padding: 8px;
-        font-size: 1.8rem;
     }
 }
