@@ -4,7 +4,7 @@ import json
 import os
 import re
 import sys
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
@@ -24,6 +24,30 @@ MAP_ID_TRANSLATION = {
     "chaoxi_jianyu": "tide-prison",
     "az3": "az3",
 }
+BEIJING_TZ = ZoneInfo("Asia/Shanghai")
+EXPECTED_MAP_IDS = frozenset(MAP_ID_TRANSLATION.values())
+
+
+def has_valid_today_codes(output_file=OUTPUT_FILE, today=None):
+    """检查现有文件是否包含北京时间当天的六张有效地图密码。"""
+    try:
+        current = json.loads(Path(output_file).read_text(encoding="utf-8"))
+        updated_at = datetime.fromisoformat(current["updatedAt"])
+        maps = current["maps"]
+    except (OSError, KeyError, TypeError, ValueError, json.JSONDecodeError):
+        return False
+
+    if not isinstance(maps, dict) or set(maps) != EXPECTED_MAP_IDS:
+        return False
+    if any(not isinstance(password, str) or not re.fullmatch(r"\d{4}", password) for password in maps.values()):
+        return False
+
+    if updated_at.tzinfo is None:
+        updated_at = updated_at.replace(tzinfo=BEIJING_TZ)
+    data_date = updated_at.astimezone(BEIJING_TZ).date()
+    if today is None:
+        today = datetime.now(BEIJING_TZ).date()
+    return data_date == today
 
 
 def request_api(api_key):
@@ -85,27 +109,42 @@ def convert_response(payload):
         raise RuntimeError("API 返回的不是今日数据，保留现有 codes.json")
 
     return {
-        "updatedAt": datetime.now(ZoneInfo("Asia/Shanghai")).isoformat(timespec="seconds"),
+        "updatedAt": datetime.now(BEIJING_TZ).isoformat(timespec="seconds"),
         "maps": website_codes,
     }
 
 
-def main():
+def update_codes(api_key, output_file=OUTPUT_FILE):
+    """校验 API 响应后再原子替换文件，避免旧数据或写入中断损坏现有文件。"""
+    new_data = convert_response(request_api(api_key))
+    output_file = Path(output_file)
+    temporary_file = output_file.with_name(f".{output_file.name}.tmp")
+    try:
+        temporary_file.write_text(
+            json.dumps(new_data, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        temporary_file.replace(output_file)
+    finally:
+        temporary_file.unlink(missing_ok=True)
+
+
+def main(skip_if_today=False):
+    if skip_if_today and has_valid_today_codes():
+        print("codes.json 已有北京时间当天的六张有效密码，跳过 API 请求和提交。")
+        return
+
     api_key = os.environ.get("DELTA_API_KEY", "").strip()
     if not api_key:
         raise RuntimeError("缺少 DELTA_API_KEY；请在 GitHub Actions Secrets 中添加 API 密钥")
 
-    new_data = convert_response(request_api(api_key))
-    OUTPUT_FILE.write_text(
-        json.dumps(new_data, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    update_codes(api_key)
     print("codes.json 已更新：6 张地图的密码已写入。")
 
 
 if __name__ == "__main__":
     try:
-        main()
+        main(skip_if_today="--skip-if-today" in sys.argv[1:])
     except Exception as error:
         print(f"更新失败：{error}", file=sys.stderr)
         sys.exit(1)
