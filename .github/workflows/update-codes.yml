@@ -1,10 +1,18 @@
 name: 每日更新地图密码
 
 on:
-  # API 说明的更新时间是北京时间凌晨 4 点；这里安排在 4:05 执行。
+  # UTC 20:17、20:37、21:17 对应韩国时间 05:17、05:37、06:17。
+  # 北京时间分别为 04:17、04:37、05:17。
   schedule:
-    - cron: "5 20 * * *"
+    - cron: "17 20 * * *"
+    - cron: "37 20 * * *"
+    - cron: "17 21 * * *"
   workflow_dispatch:
+
+# 同一时间只运行一个抓取任务；手动运行也与定时任务串行。
+concurrency:
+  group: "daily-code-update"
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -25,7 +33,12 @@ jobs:
       - name: 获取今日密码并更新 JSON
         env:
           DELTA_API_KEY: ${{ secrets.DELTA_API_KEY }}
-        run: python scripts/update_codes.py
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            python scripts/update_codes.py --skip-if-today
+          else
+            python scripts/update_codes.py
+          fi
 
       - name: 提交更新后的密码
         run: |
