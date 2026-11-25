@@ -15,7 +15,7 @@
 
 1. **搭建页面**：用 HTML 编写地图入口和详情卡片。每个入口通过 `label` 关联一个单选框，再用 CSS 的 `:checked` 状态切换详情，默认显示零号大坝。
 2. **接入数据**：用 JavaScript 请求 `codes.json`，确认六张地图的密码都是四位数字后，再同步更新顶部入口和详情卡片。Python 脚本负责调用每日密码 API、转换地图 ID 并生成网页所需的 JSON。
-3. **自动更新与部署**：GitHub Actions 在韩国时间 05:17、05:37、06:17（北京时间 04:17、04:37、05:17）尝试更新密码。定时任务和 Cloudflare 补跑发现仓库已有北京时间当天的六张有效密码时，只触发 Pages 检查。GitHub 手动运行默认强制刷新，可勾选 `skip_if_today` 跳过重复抓取。自动发布会先比较线上和仓库数据，发布失败时等待 15 秒后重试一次。
+3. **自动更新与部署**：GitHub Actions 安排在韩国时间 05:17、06:17、07:37、08:43（北京时间 04:17、05:17、06:37、07:43）尝试更新密码。仓库已有当天的六张有效密码时，后续定时任务只触发 Pages 检查。自动发布会先比较线上和仓库数据，发布失败时等待 15 秒后重试一次。`master` 推送和手动部署仍直接发布。
 4. **复用网页打包移动端**：Node.js 脚本将网页、图片和备用密码复制到 `mobile/www`，并在应用入口配置线上密码地址。Capacitor 再将这些资源同步到 Android 或 iOS 工程。
 
 ## 遇到的问题与解决过程
@@ -28,25 +28,9 @@
 | 推送双列样式后，线上仍显示六列 | 对照 `master` 的 `style.css` 和浏览器中的布局，确认新版样式已提交。GitHub Actions 日志显示 Pages 发布步骤未找到 `github-pages` 构建产物。同一次运行重跑后，发布步骤又查到两个同名产物。部署配置现在使用运行尝试编号为每次上传命名，发布步骤按相同名称查找对应的产物。 |
 | 密码可能以 0 开头，接口数据也可能缺少地图 | Python 和 JavaScript 都校验四位数字，密码以字符串保存和显示，保留 `0257` 这类前导零。缺少有效密码或 API 明确标记为非当天数据时，Python 脚本会报错并保留已有文件。 |
 
-GitHub Actions 的定时任务实际启动时间可能晚于配置时间。排查更新延迟时，可以先检查密码更新任务是否启动，再查看对应的 Pages 部署记录。[查看 Actions 运行记录](https://github.com/carrotboss271-hash/Delta-Daily-News/actions)
+GitHub Actions 的定时任务实际启动时间可能晚于配置时间。如果网页还显示旧密码，打开[每日更新地图密码](https://github.com/carrotboss271-hash/Delta-Daily-News/actions/workflows/update-codes.yml)，点击 **Run workflow**，选择 **master** 后再次点击 **Run workflow**。任务成功后，等待 [Pages 发布](https://github.com/carrotboss271-hash/Delta-Daily-News/actions/workflows/static.yml)完成，再刷新网页。
 
-定时更新使用 UTC cron（20:17、20:37、21:17），GitHub Actions 的实际启动时间仍受调度影响。每次定时运行会串行执行；如果上游明确返回旧数据或缺少六张有效密码，脚本会失败并保留现有文件。
-
-## Cloudflare 定时补跑
-
-部署后的 Worker 在韩国时间 **05:25、05:55、06:25**（北京时间 **04:25、04:55、05:25**）检查线上 `codes.json`。当天的六张有效密码已经上线时跳过。数据过期或读取失败时，Worker 触发 `master` 上的每日更新任务，随后由 GitHub Actions 抓取数据或补发到 Pages。
-
-1. 将 `skip_if_today` 输入合入 `master`。在 GitHub Actions 手动勾选该输入运行一次，确认任务能启动并完成。
-2. 在 Cloudflare 登录有 Workers 权限的账号。准备仅限此仓库的 GitHub fine-grained token，授予 `Actions: Read and write`。使用 Wrangler 的交互式提示，将凭据保存为 Worker Secret。
-
-   ```sh
-   npx wrangler secret put GITHUB_ACTIONS_TOKEN --config cloudflare/wrangler.toml
-   npx wrangler deploy --config cloudflare/wrangler.toml
-   ```
-
-3. 在 Worker 日志里检查 `skip`、`dispatch` 或 `dispatch-failed`，并打开 `dispatch` 日志中的 GitHub 运行链接。连续三个早晨核对线上数据。至少观察一次 Worker 检测到旧数据、触发任务、线上六张密码全部更新，才能确认补跑路由在线上生效。
-
-如果需要停用补跑，把 `cloudflare/wrangler.toml` 的 `crons` 改为 `[]` 后重新部署 Worker。
+更新任务串行执行。如果上游明确返回旧数据或缺少六张有效密码，脚本会失败并保留现有文件。
 
 ## 本地开发
 

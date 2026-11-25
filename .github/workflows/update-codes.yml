@@ -1,18 +1,13 @@
 name: 每日更新地图密码
 
 on:
-  # UTC 20:17、20:37、21:17 对应韩国时间 05:17、05:37、06:17。
-  # 北京时间分别为 04:17、04:37、05:17。
+  # 韩国时间 05:17、06:17、07:37、08:43；北京时间早一小时。
   schedule:
     - cron: "17 20 * * *"
-    - cron: "37 20 * * *"
     - cron: "17 21 * * *"
+    - cron: "37 22 * * *"
+    - cron: "43 23 * * *"
   workflow_dispatch:
-    inputs:
-      skip_if_today:
-        description: "已有当天密码时跳过抓取，只检查是否需要发布"
-        type: boolean
-        default: false
 
 # 同一时间只运行一个抓取任务；手动运行也与定时任务串行。
 concurrency:
@@ -41,9 +36,8 @@ jobs:
       - name: 获取今日密码并更新 JSON
         env:
           DELTA_API_KEY: ${{ secrets.DELTA_API_KEY }}
-          SKIP_IF_TODAY: ${{ github.event_name == 'schedule' || inputs.skip_if_today == true }}
         run: |
-          if [ "$SKIP_IF_TODAY" = "true" ]; then
+          if [ "$GITHUB_EVENT_NAME" = "schedule" ]; then
             python scripts/update_codes.py --skip-if-today
           else
             python scripts/update_codes.py
