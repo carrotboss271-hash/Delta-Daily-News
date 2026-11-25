@@ -8,6 +8,11 @@ on:
     - cron: "37 20 * * *"
     - cron: "17 21 * * *"
   workflow_dispatch:
+    inputs:
+      skip_if_today:
+        description: "已有当天密码时跳过抓取，只检查是否需要发布"
+        type: boolean
+        default: false
 
 # 同一时间只运行一个抓取任务；手动运行也与定时任务串行。
 concurrency:
@@ -24,6 +29,9 @@ jobs:
     steps:
       - name: 拉取项目文件
         uses: actions/checkout@v7
+        with:
+          # 排队期间可能已有任务提交了当天密码，启动后读取分支最新版本。
+          ref: ${{ github.ref }}
 
       - name: 准备 Python
         uses: actions/setup-python@v7
@@ -33,8 +41,9 @@ jobs:
       - name: 获取今日密码并更新 JSON
         env:
           DELTA_API_KEY: ${{ secrets.DELTA_API_KEY }}
+          SKIP_IF_TODAY: ${{ github.event_name == 'schedule' || inputs.skip_if_today == true }}
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ]; then
+          if [ "$SKIP_IF_TODAY" = "true" ]; then
             python scripts/update_codes.py --skip-if-today
           else
             python scripts/update_codes.py
