@@ -32,6 +32,14 @@ GitHub Actions 的定时任务实际启动时间可能晚于配置时间。如�
 
 更新任务串行执行。如果上游明确返回旧数据或缺少六张有效密码，脚本会失败并保留现有文件。
 
+## Cloudflare 自动补跑
+
+Worker 在韩国时间 **05:25、05:55、06:25**（北京时间 **04:25、04:55、05:25**）检查线上 `codes.json`。如果缺少北京时间当天的六张有效密码，就触发 `master` 上的更新任务，并传入 `skip_if_today: true`。仓库已有当天数据时只检查 Pages 是否需要补发。
+
+首次部署时先建好 Worker，保持公开入口和定时触发关闭。将仅限本仓库、具有 `Actions: Read and write` 权限的 GitHub fine-grained token 存为 Worker Secret `GITHUB_ACTIONS_TOKEN`，然后用 `cloudflare/wrangler.toml` 启用三个定时触发。普通手动运行默认强制抓取，不需要为此创建 token。
+
+在 Cloudflare 日志里查看 `skip`（当天数据已上线）、`dispatch`（已触发 GitHub）或 `dispatch-failed`（触发失败）。至少观察一次从发现旧数据到线上六张地图更新的全过程，再确认自动补跑已生效。
+
 ## 本地开发
 
 在仓库根目录启动静态服务器，然后打开 [http://localhost:8000](http://localhost:8000)：
