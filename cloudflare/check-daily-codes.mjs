@@ -61,7 +61,8 @@ async function dispatchUpdate(token) {
             "X-GitHub-Api-Version": "2026-03-10",
         },
         body: JSON.stringify({ ref: "master", inputs: { skip_if_today: true } }),
-        redirect: "error",
+        // Workers supports manual redirects, keeping the credential on the GitHub request.
+        redirect: "manual",
         signal: AbortSignal.timeout(15_000),
     });
     if (!response.ok) {

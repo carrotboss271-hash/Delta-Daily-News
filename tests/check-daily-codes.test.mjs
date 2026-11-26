@@ -59,10 +59,24 @@ for (const [scenario, pagesResponse, reason] of [
         assert.equal(url, "https://api.github.com/repos/carrotboss271-hash/Delta-Daily-News/actions/workflows/update-codes.yml/dispatches");
         assert.equal(options.method, "POST");
         assert.equal(options.headers.Authorization, "Bearer test-token");
+        assert.equal(options.redirect, "manual");
         assert.deepEqual(JSON.parse(options.body), { ref: "master", inputs: { skip_if_today: true } });
         assert.deepEqual(log.mock.calls[0].arguments[0], { action: "dispatch", today: "2026-11-25", pages: reason, runUrl });
     });
 }
+
+test("rejects a redirect from GitHub without making another request", async (t) => {
+    t.mock.method(console, "error", () => {});
+    const sendRequest = t.mock.method(globalThis, "fetch", async (_url, options) => (
+        options.method === "POST"
+            ? Response.redirect("https://example.com", 302)
+            : new Response(null, { status: 404 })
+    ));
+
+    await assert.rejects(worker.scheduled({}, env), /GitHub workflow dispatch returned HTTP 302/);
+    assert.equal(sendRequest.mock.callCount(), 2);
+    assert.equal(sendRequest.mock.calls[1].arguments[1].redirect, "manual");
+});
 
 test("marks the scheduled invocation as failed when GitHub rejects dispatch", async (t) => {
     const log = t.mock.method(console, "error", () => {});
