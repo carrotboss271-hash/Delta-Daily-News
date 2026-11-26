@@ -59,6 +59,7 @@ for (const [scenario, pagesResponse, reason] of [
         assert.equal(url, "https://api.github.com/repos/carrotboss271-hash/Delta-Daily-News/actions/workflows/update-codes.yml/dispatches");
         assert.equal(options.method, "POST");
         assert.equal(options.headers.Authorization, "Bearer test-token");
+        assert.equal(options.headers["User-Agent"], "delta-daily-codes-backup");
         assert.equal(options.redirect, "manual");
         assert.deepEqual(JSON.parse(options.body), { ref: "master", inputs: { skip_if_today: true } });
         assert.deepEqual(log.mock.calls[0].arguments[0], { action: "dispatch", today: "2026-11-25", pages: reason, runUrl });

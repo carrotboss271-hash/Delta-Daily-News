@@ -58,6 +58,7 @@ async function dispatchUpdate(token) {
             Accept: "application/vnd.github+json",
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
+            "User-Agent": "delta-daily-codes-backup",
             "X-GitHub-Api-Version": "2026-03-10",
         },
         body: JSON.stringify({ ref: "master", inputs: { skip_if_today: true } }),
